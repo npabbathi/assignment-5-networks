@@ -26,6 +26,7 @@ def dh_exchange_client(server_address: str, server_port: int) -> Tuple[int, int,
         data = s.recv(1024)
         shared_secret = int(data.decode('utf-8')) ** client_secret % mod
         print("client return", base, mod, client_secret, shared_secret)
+        s.close()
     return (base, mod, client_secret, shared_secret)
 
 

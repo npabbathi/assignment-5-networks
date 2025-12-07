@@ -24,14 +24,16 @@ def dh_exchange_server(server_address: str, server_port: int) -> Tuple[int, int,
         conn, addr = s.accept()
         with conn:
             print(f"Connected by {addr}")
-            data = conn.recv(1024)
             base, modulus = receive_common_info(conn)
             server_secret = random.randint(1, 100)
             server_message = base ** server_secret % modulus
             conn.sendall(str(server_message).encode('utf-8'))
 
+            data = conn.recv(1024)
+
     shared_secret = int(data.decode('utf-8')) ** server_secret % modulus
     print("server return", base, modulus, server_secret, shared_secret)
+    s.close()
     return (base, modulus, server_secret, shared_secret)
 
 def main(args):
