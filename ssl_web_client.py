@@ -20,7 +20,8 @@ def create_socket(host: str, port: int, use_ssl: bool) -> socket.socket | ssl.SS
 # def create_socket(host: str, port: int, use_ssl: bool) -> Union[socket.socket, ssl.SSLSocket]:
     # TODO: Create a TCP socket and wrap it in an SSL context if use_ssl is true
     if use_ssl:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        # context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context = ssl.create_default_context()
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
