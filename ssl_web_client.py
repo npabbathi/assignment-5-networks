@@ -5,6 +5,7 @@ import socket
 import argparse
 from typing import Dict, Any
 from pathlib import Path
+from typing import Union
 
 '''
 Simple script that creates a TCP client (optionally secured by SSL). This
@@ -15,23 +16,25 @@ If using SSL/HTTPS, it should also print the certificate.
 def craft_http_request(host: str, path: str) -> str:
     return f"GET {path} HTTP/1.1\r\nHost: {host}\r\n\r\n"
 
-def create_socket(host: str, port: int, use_ssl: bool) -> socket.socket | ssl.SSLSocket:
+# def create_socket(host: str, port: int, use_ssl: bool) -> socket.socket | ssl.SSLSocket:
+def create_socket(host: str, port: int, use_ssl: bool) -> Union[socket.socket, ssl.SSLSocket]:
     # TODO: Create a TCP socket and wrap it in an SSL context if use_ssl is true
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((host, port))
-        if use_ssl:
-            context = ssl.create_default_context()
-            ssl_socket = context.wrap_socket(s, server_hostname=host)
-            return ssl_socket
-        else:
-            return s
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+    if use_ssl:
+        context = ssl.create_default_context()
+        ssl_socket = context.wrap_socket(s, server_hostname=host)
+        return ssl_socket
+    else:
+        return s
 
 
 def get_peer_certificate(ssl_socket: ssl.SSLSocket) -> Dict[str, Any]:
     # TODO: Get the peer certificate from the connected SSL socket.
     return ssl_socket.getpeercert()
 
-def send_http_request(s: socket.socket | ssl.SSLSocket, request_string: str) -> str:
+# def send_http_request(s: socket.socket | ssl.SSLSocket, request_string: str) -> str:
+def send_http_request(s: Union[socket.socket, ssl.SSLSocket], request_string: str) -> str:
     # TODO: Send an HTTPS request to the server using the SSL socket.
     s.sendall(request_string.encode('utf-8'))
     # TODO: receive response and return it as a string
