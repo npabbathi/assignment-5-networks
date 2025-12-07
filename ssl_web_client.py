@@ -42,7 +42,7 @@ def send_http_request(s: socket.socket | ssl.SSLSocket, request_string: str) -> 
     # TODO: Send an HTTPS request to the server using the SSL socket.
     s.sendall(request_string.encode('utf-8'))
     # TODO: receive response and return it as a string
-    data = s.recv(10000)
+    data = s.recv(1024)
     return data.decode('utf-8')
 
 
