@@ -28,14 +28,19 @@ Content-Type: text/html
 
 def create_ssl_context(cert_file: str, key_file: Optional[str]) -> ssl.SSLContext:
     # TODO: Create an SSL context for the server side. You will need to load your certificate.
-    pass
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile=cert_file, keyfile=key_file)
+    return context
 
 def setup_server(
     host_ip: str,
     host_port: int
 ) -> socket.socket:
     # TODO: Create a TCP server socket and start listening for connections
-    pass
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((host_ip, host_port))
+    s.listen()
+    return s
 
 
 def setup_connection(
@@ -43,14 +48,22 @@ def setup_connection(
     ssl_context: Optional[ssl.SSLContext] = None
 ) -> socket.socket | ssl.SSLSocket:
     # TODO accept a connection
+    conn, addr = listen_socket.accept()
     # TODO if ssl_context is not None, wrap socket in SSL context
-    pass
+    if ssl_context:
+        ssl_conn = ssl_context.wrap_socket(conn, server_side=True)
+        return ssl_conn
+    else:
+        return conn
 
 
 def handle_request(s: socket.socket | ssl.SSLSocket ) -> bytes:
     # TODO read client request and responds with HTML_RESPONSE
+    data = s.recv(10000)
+    s.sendall(HTML_RESPONSE)
     # TODO close connection after responding
-    pass
+    s.close()
+    return data
 
 def main(args):
     if args.ssl:
