@@ -28,7 +28,7 @@ def dh_exchange_server(server_address: str, server_port: int) -> Tuple[int, int,
             base, modulus = receive_common_info(conn)
             server_secret = random.randint(1, 100)
             server_message = base ** server_secret % modulus
-            print("Server: I am sending my public key", secret_message)
+            print("Server: I am sending my public key", server_message)
             conn.sendall(str(server_message).encode('utf-8'))
 
             data = conn.recv(1024)
