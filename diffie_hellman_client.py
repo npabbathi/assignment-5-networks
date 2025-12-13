@@ -9,6 +9,7 @@ from typing import Tuple
 def send_common_info(sock: socket.socket) -> Tuple[int, int]:
     # TODO: Connect to the server and propose a base number and prime
     message = "5 23"
+    print("Client: My proposal is ", message)
     # Send the message
     sock.sendall(message.encode('utf-8'))
     # Receive the response
@@ -22,9 +23,11 @@ def dh_exchange_client(server_address: str, server_port: int) -> Tuple[int, int,
         base, mod = send_common_info(s)
         client_secret = random.randint(1, 100)
         client_message = base ** client_secret % mod
+        print("Client: I am sending my public key", client_message)
         s.sendall(str(client_message).encode('utf-8'))
         data = s.recv(1024)
         shared_secret = int(data.decode('utf-8')) ** client_secret % mod
+        print("Client: I just received computed value from server", int(data.decode('utf-8')))
         print("client return", base, mod, client_secret, shared_secret)
         s.close()
     return (base, mod, client_secret, shared_secret)
