@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Tuple
 
 # TODO feel free to use this helper or not
+UPPER_BOUND = 100
 def receive_common_info(conn: socket.socket) -> Tuple[int, int]:
     # TODO: Wait for a client message that sends a base number.
     data = conn.recv(1024)
@@ -26,7 +27,7 @@ def dh_exchange_server(server_address: str, server_port: int) -> Tuple[int, int,
         with conn:
             print(f"Connected by {addr}")
             base, modulus = receive_common_info(conn)
-            server_secret = random.randint(1, 100)
+            server_secret = random.randint(1, UPPER_BOUND)
             server_message = base ** server_secret % modulus
             print("Server: I am sending my public key", server_message)
             conn.sendall(str(server_message).encode('utf-8'))
